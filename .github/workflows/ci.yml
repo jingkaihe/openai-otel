@@ -1,5 +1,4 @@
-name: OpenAI Otel Test
-
+name: CI
 on:
   push:
     branches:
@@ -22,8 +21,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          pipx install poetry
+          pipx install poetry --python $(which python${{ matrix.python-version }})
           poetry install
       - name: Run tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           poetry run pytest
