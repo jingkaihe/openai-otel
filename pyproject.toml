@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openai-otel"
-version = "0.1.0"
+version = "0.1.0.alpha"
 description = "openai-otel is a library that automatically instrument your OpenAI python code using OpenTelemetry"
 authors = ["Jingkai He <jingkai@hey.com>"]
 readme = "README.md"

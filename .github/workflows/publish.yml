@@ -1,0 +1,38 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pyproject.toml'
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pipx install poetry --python $(which python3.12)
+      - name: Install project
+        run: poetry install
+      - name: Build package
+        run: |
+          poetry build
+      - name: Publish package
+        env:
+          TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.TWINE_TOKEN }}
+          poetry publish
