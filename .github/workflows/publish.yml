@@ -6,9 +6,6 @@ on:
       - main
     paths:
       - 'pyproject.toml'
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
 
 jobs:
   build:
@@ -27,6 +24,11 @@ jobs:
           pipx install poetry --python $(which python3.12)
       - name: Install project
         run: poetry install
+      - name: Run tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          poetry run pytest
       - name: Build package
         run: |
           poetry build
