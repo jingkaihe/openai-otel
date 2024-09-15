@@ -5,6 +5,7 @@ import openai
 from typing import Collection
 import json
 from openai.types.chat import ChatCompletion
+from openai.resources.chat import AsyncCompletions, Completions
 
 # xxx: maybe a dedicated __version__.py file?
 __version__ = "0.1.0"
@@ -14,14 +15,21 @@ tracer = get_tracer(__name__, __version__)
 
 class OpenAIAutoInstrumentor(BaseInstrumentor):
     def _instrument(self, **kwargs):
-        self.original_chat_completions_create = openai.chat.completions.create
+        self.original_chat_completions_create = Completions.create
 
-        openai.chat.completions.create = self._patch_chat_completions_create(
-            "openai.chat.completions.create",
+        Completions.create = self._patch_completions(
+            "openai.completions.create",
             self.original_chat_completions_create,
         )
 
-    def _patch_chat_completions_create(self, span_name, func):
+        self.original_chat_completions_create_async = AsyncCompletions.create
+
+        AsyncCompletions.create = self._patch_completions_async(
+            "openai.completions.create_async",
+            self.original_chat_completions_create_async,
+        )
+
+    def _patch_completions(self, span_name, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             with tracer.start_as_current_span(span_name) as span:
@@ -44,6 +52,34 @@ class OpenAIAutoInstrumentor(BaseInstrumentor):
                 else:
                     self._track_req(kwargs, span)
                     resp: ChatCompletion = func(*args, **kwargs)
+                    self._track_resp(resp, span)
+                    return resp
+
+        return wrapper
+
+    def _patch_completions_async(self, span_name, func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            with tracer.start_as_current_span(span_name) as span:
+                stream = kwargs.get("stream", False)
+                if stream:
+
+                    async def gen():
+                        data = ""
+                        tracked = False
+                        async for chunk in await func(*args, **kwargs):
+                            if not tracked:
+                                self._track_resp(chunk, span)
+                                tracked = True
+                            if chunk.choices[0].delta.content:
+                                data += chunk.choices[0].delta.content
+                            yield chunk
+                        span.set_attribute("create.response.message.content", data)
+
+                    return gen()
+                else:
+                    self._track_req(kwargs, span)
+                    resp: ChatCompletion = await func(*args, **kwargs)
                     self._track_resp(resp, span)
                     return resp
 
@@ -86,4 +122,5 @@ class OpenAIAutoInstrumentor(BaseInstrumentor):
         return ["openai"]
 
     def _uninstrument(self, **kwargs):
-        openai.chat.completions.create = self.original_chat_completions_create
+        Completions.create = self.original_chat_completions_create
+        AsyncCompletions.create = self.original_chat_completions_create_async
