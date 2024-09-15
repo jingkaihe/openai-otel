@@ -1,7 +1,6 @@
 import pytest
-import openai
 from openai import AsyncOpenAI
-from openai_otel import OpenAIAutoInstrumentor, tracer
+from openai_otel import OpenAIAutoInstrumentor
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 
