@@ -28,4 +28,4 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          poetry run pytest
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} poetry run pytest
