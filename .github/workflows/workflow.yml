@@ -1,5 +1,5 @@
-name: OpenAI Otel Test
-
+name: CI
+env:
 on:
   push:
     branches:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    environment: ci
     runs-on: ubuntu-latest
     strategy:
       matrix:
