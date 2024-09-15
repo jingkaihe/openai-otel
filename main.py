@@ -11,9 +11,6 @@ trace.get_tracer_provider().add_span_processor(
 
 OpenAIAutoInstrumentor().instrument()
 
-
-client = openai.OpenAI()
-
 if __name__ == "__main__":
     resp = openai.chat.completions.create(
         model="gpt-4o",
