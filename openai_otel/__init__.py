@@ -12,7 +12,7 @@ from openai.resources.embeddings import (
 )
 
 # xxx: maybe a dedicated __version__.py file?
-__version__ = "0.1.0.alpha1"
+__version__ = "0.1.0.alpha2"
 
 tracer = get_tracer(__name__, __version__)
 
