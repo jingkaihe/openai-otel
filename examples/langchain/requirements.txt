@@ -1,0 +1,19 @@
+openai
+opentelemetry-api
+opentelemetry-instrumentation
+opentelemetry-instrumentation-asyncio==0.48b0
+opentelemetry-instrumentation-dbapi==0.48b0
+opentelemetry-instrumentation-logging==0.48b0
+opentelemetry-instrumentation-sqlite3==0.48b0
+opentelemetry-instrumentation-threading==0.48b0
+opentelemetry-instrumentation-urllib==0.48b0
+opentelemetry-instrumentation-wsgi==0.48b0
+opentelemetry-instrumentation-asgi==0.48b0
+opentelemetry-instrumentation-fastapi==0.48b0
+opentelemetry-instrumentation-httpx==0.48b0
+opentelemetry-instrumentation-jinja2==0.48b0
+opentelemetry-instrumentation-tortoiseorm==0.48b0
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+openai_otel @ git+https://github.com/jingkaihe/openai-otel@main
+langchain-openai

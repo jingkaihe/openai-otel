@@ -75,6 +75,13 @@ Afterwards you can check out the traces on Grafana. You can do it via:
 * Click `TraceQL`
 * Run `{.service.name="fastapi-demo" && span.create.request.model="gpt-4o"}`
 
+
+# More examples
+
+* [Simple](./examples/simple)
+* [LangChain](./examples/langchain)
+* [FastAPI](./examples/fastapi)
+
 You will get view like this:
 
 ![alt text](./docs/grafana-screenshot.png)
